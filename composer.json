@@ -28,5 +28,10 @@
     },
     "extra": {
         "class": "YOURLS\\ComposerInstaller\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "wikimedia/composer-merge-plugin": true
+        }
     }
 }
