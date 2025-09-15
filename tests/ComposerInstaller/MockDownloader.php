@@ -7,14 +7,12 @@ namespace YOURLS\ComposerInstaller;
 use Composer\Downloader\DownloaderInterface;
 use Composer\Package\PackageInterface;
 use Composer\Util\Filesystem;
+use React\Promise\PromiseInterface;
 
 class MockDownloader implements DownloaderInterface
 {
-    protected Filesystem $filesystem;
-
-    public function __construct(Filesystem $filesystem)
+    public function __construct(protected Filesystem $filesystem)
     {
-        $this->filesystem = $filesystem;
     }
 
     public function getInstallationSource(): string
@@ -22,7 +20,40 @@ class MockDownloader implements DownloaderInterface
         return 'dist';
     }
 
-    public function download(PackageInterface $package, string $path): void
+    public function download(PackageInterface $package, string $path, ?PackageInterface $prevPackage = null): PromiseInterface
+    {
+        // Simulate immediate resolution
+        $this->installFiles($package, $path);
+        return \React\Promise\resolve();
+    }
+
+    public function prepare(string $type, PackageInterface $package, string $path, ?PackageInterface $prevPackage = null): PromiseInterface
+    {
+        return \React\Promise\resolve();
+    }
+
+    public function install(PackageInterface $package, string $path): PromiseInterface
+    {
+        return $this->download($package, $path);
+    }
+
+    public function update(PackageInterface $initial, PackageInterface $target, string $path): PromiseInterface
+    {
+        $this->installFiles($target, $path);
+        return \React\Promise\resolve();
+    }
+
+    public function remove(PackageInterface $package, string $path): PromiseInterface
+    {
+        return \React\Promise\resolve();
+    }
+
+    public function cleanup(string $type, PackageInterface $package, string $path, ?PackageInterface $prevPackage = null): PromiseInterface
+    {
+        return \React\Promise\resolve();
+    }
+
+    private function installFiles(PackageInterface $package, string $path): void
     {
         // install a fake plugin directory
         $this->filesystem->ensureDirectoryExists($path);
@@ -34,17 +65,6 @@ class MockDownloader implements DownloaderInterface
             touch($path . '/vendor/test/test.txt');
             touch($path . '/vendor-created.txt');
         }
-    }
-
-    public function update(PackageInterface $initial, PackageInterface $target, string $path): void
-    {
-        $this->remove($initial, $path);
-        $this->download($target, $path);
-    }
-
-    public function remove(PackageInterface $package, string $path): void
-    {
-        // not needed for testing
     }
 
     public function setOutputProgress(bool $outputProgress): void

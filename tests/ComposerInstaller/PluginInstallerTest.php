@@ -110,8 +110,8 @@ class PluginInstallerTest extends InstallerTestCase
         $this->assertFileExists($this->testDir . '/vendor/joecool/super-plugin/vendor-created.txt');
 
         $this->filesystem->emptyDirectory($this->testDir . '/vendor/joecool/super-plugin');
-        $this->assertFileNotExists($this->testDir . '/vendor/joecool/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/vendor/joecool/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/vendor/joecool/super-plugin/plugin.php');
+        $this->assertFileDoesNotExist($this->testDir . '/vendor/joecool/super-plugin/vendor-created.txt');
 
         $target = $this->pluginPackageFactory(self::VENDOR_DIR);
         $this->assertEquals($this->testDir . '/vendor/joecool/super-plugin', $this->installer->getInstallPath($target));
@@ -132,17 +132,17 @@ class PluginInstallerTest extends InstallerTestCase
         $this->installer->install($repo, $initial);
         $repo->addPackage($initial);
         $this->assertFileExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $this->filesystem->emptyDirectory($this->testDir . '/user/plugins/super-plugin');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/plugin.php');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $target = $this->pluginPackageFactory(self::SUPPORTED);
         $this->assertEquals('user/plugins/super-plugin', $this->installer->getInstallPath($target));
         $this->installer->update($repo, $initial, $target);
         $this->assertFileExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
     }
 
     public function testUpdateVendorDir(): void
@@ -157,8 +157,8 @@ class PluginInstallerTest extends InstallerTestCase
         $this->assertFileExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $this->filesystem->emptyDirectory($this->testDir . '/user/plugins/super-plugin');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/plugin.php');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $target = $this->pluginPackageFactory(self::SUPPORTED | self::VENDOR_DIR);
         $this->assertEquals('user/plugins/super-plugin', $this->installer->getInstallPath($target));
@@ -179,8 +179,9 @@ class PluginInstallerTest extends InstallerTestCase
 
         // This package is a YOURLS plugin that supports the YOURLS Installer
         if ($flags & self::SUPPORTED) {
+            $link = new Link($name, 'yourls/composer-installer', new \Composer\Semver\Constraint\MatchAllConstraint());
             $package->setRequires([
-                new Link($name, 'yourls/composer-installer')
+                'yourls/composer-installer' => $link
             ]);
         }
 

@@ -19,12 +19,14 @@ class PluginTest extends TestCase
     public function testActivate(): void
     {
         $composer            = new Composer();
-        $installationManager = new InstallationManager();
+        $io                  = new NullIO();
+        $loop                = new \Composer\Util\Loop(new \Composer\Util\HttpDownloader($io, new Config()));
+        $installationManager = new InstallationManager($loop, $io);
         $composer->setInstallationManager($installationManager);
         $composer->setConfig(new Config());
 
         $plugin = new Plugin();
-        $plugin->activate($composer, new NullIO());
+        $plugin->activate($composer, $io);
 
         $installer = $installationManager->getInstaller('yourls-plugin');
         $this->assertInstanceOf(PluginInstaller::class, $installer);
