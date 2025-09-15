@@ -1,9 +1,9 @@
 {
-    "name": "yourls/composer-installer",
+    "name": "maingron/yourls-composer-installer",
     "description": "YOURLS' custom Composer installer for YOURLS plugins",
     "type": "composer-plugin",
     "license": "MIT",
-    "homepage": "https://github.com/yourls/composer-installer",
+    "homepage": "https://github.com/Maingron/yourls-composer-installer",
     "keywords": [
         "yourls",
         "yourls-plugin"
