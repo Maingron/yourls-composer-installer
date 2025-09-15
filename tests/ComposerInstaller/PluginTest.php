@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YOURLS\ComposerInstaller;
 
 use PHPUnit\Framework\TestCase;
@@ -14,7 +16,7 @@ class PluginTest extends TestCase
     /**
      * Test if the composer plugin loads as expected
      */
-    public function testActivate()
+    public function testActivate(): void
     {
         $composer            = new Composer();
         $installationManager = new InstallationManager();
@@ -28,7 +30,7 @@ class PluginTest extends TestCase
         $this->assertInstanceOf(PluginInstaller::class, $installer);
     }
 
-    public function testCapabilities()
+    public function testCapabilities(): void
     {
         $plugin = new Plugin();
 
@@ -37,6 +39,4 @@ class PluginTest extends TestCase
             $plugin->getCapabilities()
         );
     }
-
-
 }

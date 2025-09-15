@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * YOURLS Composer Installer
  */
@@ -19,15 +22,14 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class CommandAddPlugin extends CommandBase
 {
-
     /**
      * Configure the composer custom command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $name = 'add-plugin';
         $desc = '<warning>Downloads</warning> a <info>YOURLS plugin</info> and add it to your <comment>`user/composer.json`</comment>';
-        $def  = [ new InputArgument('plugins', InputArgument::IS_ARRAY, 'YOURLS plugin(s) to download') ];
+        $def  = [new InputArgument('plugins', InputArgument::IS_ARRAY, 'YOURLS plugin(s) to download')];
         $help = <<<EOT
 Example: <comment>`composer add-plugin ozh/example-plugin`</comment>
 This command downloads plugins in the appropriate subfolder of <comment>user/plugins/</comment>, adds them to
@@ -44,11 +46,8 @@ EOT;
 
     /**
      * Execute the composer custom command
-     *
-     * @param  InputInterface $input    Input interface
-     * @param  OutputInterface $output  Output interface
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /**
          * First : composer require -d user joecool/super-plugin --no-update
@@ -80,5 +79,7 @@ EOT;
         if (($require & $update) === 0) {
             $output->writeln('Installed !');
         }
+
+        return 0;
     }
 }

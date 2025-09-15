@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YOURLS\ComposerInstaller;
 
 use Composer\Downloader\DownloaderInterface;
@@ -8,19 +10,19 @@ use Composer\Util\Filesystem;
 
 class MockDownloader implements DownloaderInterface
 {
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }
 
-    public function getInstallationSource()
+    public function getInstallationSource(): string
     {
         return 'dist';
     }
 
-    public function download(PackageInterface $package, $path)
+    public function download(PackageInterface $package, string $path): void
     {
         // install a fake plugin directory
         $this->filesystem->ensureDirectoryExists($path);
@@ -34,18 +36,18 @@ class MockDownloader implements DownloaderInterface
         }
     }
 
-    public function update(PackageInterface $initial, PackageInterface $target, $path)
+    public function update(PackageInterface $initial, PackageInterface $target, string $path): void
     {
         $this->remove($initial, $path);
         $this->download($target, $path);
     }
 
-    public function remove(PackageInterface $package, $path)
+    public function remove(PackageInterface $package, string $path): void
     {
         // not needed for testing
     }
 
-    public function setOutputProgress($outputProgress)
+    public function setOutputProgress(bool $outputProgress): void
     {
         // not needed for testing
     }

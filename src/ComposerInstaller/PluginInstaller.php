@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * YOURLS Composer Installer
  */
@@ -31,9 +34,6 @@ class PluginInstaller extends Installer
 
     /**
      * Returns the installation path of a package
-     *
-     * @param  PackageInterface $package  Package
-     * @return string                     path
      */
     public function getInstallPath(PackageInterface $package): string
     {
@@ -43,20 +43,16 @@ class PluginInstaller extends Installer
         }
 
         // Get the extra configuration of the top-level package
-        if ($rootPackage = $this->composer->getPackage()) {
-            $extra = $rootPackage->getExtra();
-        } else {
-            $extra = [];
-        }
+        $rootPackage = $this->composer->getPackage();
+        $extra = $rootPackage?->getExtra() ?? [];
 
         // use base path from configuration if specified, otherwise use YOURLS default
         $basePath = $extra['yourls-plugin-path'] ?? 'user/plugins';
 
         // Get plugin name from its package name
         $prettyName = $package->getPrettyName();
-        $pluginExtra = $package->getExtra();
 
-        if (strpos($prettyName, '/') !== false) {
+        if (str_contains($prettyName, '/')) {
             // use name after the slash
             $name = explode('/', $prettyName)[1];
         } else {
@@ -70,10 +66,8 @@ class PluginInstaller extends Installer
 
     /**
      * Custom handler that will be called after package install or update
-     *
-     * @param PackageInterface $package  Package
      */
-    protected function postInstall(PackageInterface $package)
+    protected function postInstall(PackageInterface $package): void
     {
         // only continue if PluginInstaller is supported
         if ($this->requiresPluginInstaller($package) !== true) {
@@ -88,9 +82,6 @@ class PluginInstaller extends Installer
      *
      * If not (package is not a YOURLS plugin, or plugin does not support this installer yet)
      * the installer will fall back to the behavior of the LibraryInstaller
-     *
-     * @param  PackageInterface $package
-     * @return bool
      */
     protected function requiresPluginInstaller(PackageInterface $package): bool
     {
@@ -106,13 +97,9 @@ class PluginInstaller extends Installer
 
     /**
      * Fix path in Windows
-     *
-     * @param  string $path  Path
-     * @return string
      */
     protected function fixWinPath(string $path): string
     {
         return str_replace('\\', '/', $path);
     }
-
 }

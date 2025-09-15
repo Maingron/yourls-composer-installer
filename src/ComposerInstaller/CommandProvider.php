@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * YOURLS Composer Installer
  */
@@ -19,8 +22,10 @@ class CommandProvider implements CommandProviderCapability
 {
     /**
      * Register custom composer commands
+     *
+     * @return array<int, object>
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         return [
             new Commands\CommandAddPlugin(),

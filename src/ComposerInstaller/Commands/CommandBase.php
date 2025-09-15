@@ -1,10 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * YOURLS Composer Installer
  */
 
 namespace YOURLS\ComposerInstaller\Commands;
 
+use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Composer\Console\Application;
@@ -23,12 +27,11 @@ class CommandBase extends BaseCommand
     /**
      * Run a composer internal command
      *
-     * @param array $commandParams  Command parameters
-     * @param OutputInterface       Output interface
-     * @return int                  0 for success
-     * @throws \RuntimeException
+     * @param array<string, mixed> $commandParams  Command parameters
+     *
+     * @throws RuntimeException
      */
-    public function runComposerCommand(array $commandParams, OutputInterface $output)
+    public function runComposerCommand(array $commandParams, OutputInterface $output): int
     {
         $application = new Application();
         $application->resetComposer();
@@ -41,7 +44,7 @@ class CommandBase extends BaseCommand
         $exitCode = $application->run($input, $output);
 
         if ($exitCode) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Command "%s" failed', $commandParams['command'])
             );
         }
