@@ -2,18 +2,15 @@
 
 <phpunit
     bootstrap="tests/bootstrap.php"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
     stderr="true"
     colors="true"
-    verbose="true">
+    cacheDirectory=".phpunit.cache">
 
-    <filter>
-        <whitelist>
+    <coverage>
+        <include>
             <directory>./src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 
     <testsuites>
         <testsuite name="Classes">

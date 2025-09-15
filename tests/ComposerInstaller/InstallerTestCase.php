@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YOURLS\ComposerInstaller;
 
 use PHPUnit\Framework\TestCase;
@@ -13,15 +15,15 @@ use Composer\Util\Filesystem;
 
 class InstallerTestCase extends TestCase
 {
-    protected $testDir;
+    protected string $testDir;
 
-    protected $composer;
-    protected $filesystem;
+    protected Composer $composer;
+    protected Filesystem $filesystem;
     protected $installer;
-    protected $io;
+    protected NullIO $io;
     protected $rootPackage;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->testDir = str_replace('\\', '/', dirname(__DIR__) . '/tmp');
 
@@ -39,7 +41,7 @@ class InstallerTestCase extends TestCase
         chdir($this->testDir);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         $this->filesystem->removeDirectory($this->testDir);
     }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * YOURLS Composer Installer
  */
@@ -10,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 /**
- * Defines the 'add-plugin' custom command
+ * Defines the 'remove-plugin' custom command
  *
  * @package   YOURLS\ComposerInstaller\Commands\CommandRemovePlugin
  * @author    Ozh <ozh@ozh.org>
@@ -19,15 +22,14 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class CommandRemovePlugin extends CommandBase
 {
-
     /**
      * Configure the composer custom command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $name = 'remove-plugin';
         $desc = '<warning>Removes</warning> a <info>YOURLS plugin</info>';
-        $def  = [ new InputArgument('plugins', InputArgument::IS_ARRAY, 'YOURLS plugin(s) to remove') ];
+        $def  = [new InputArgument('plugins', InputArgument::IS_ARRAY, 'YOURLS plugin(s) to remove')];
         $help = <<<EOT
 Example: <comment>`composer remove-plugin ozh/example-plugin`</comment>
 This command <warning>deletes</warning> plugins from <comment>user/plugins/</comment>, including dependencies,
@@ -44,11 +46,8 @@ EOT;
 
     /**
      * Execute the composer custom command
-     *
-     * @param  InputInterface $input    Input interface
-     * @param  OutputInterface $output  Output interface
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /**
          * First : composer remove -d user joecool/super-plugin --no-update
@@ -80,5 +79,7 @@ EOT;
         if (($require & $update) === 0) {
             $output->writeln('Removed !');
         }
+
+        return 0;
     }
 }

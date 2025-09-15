@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * YOURLS Composer Installer
  */
@@ -25,21 +28,30 @@ class Plugin implements PluginInterface, Capable
 {
     /**
      * Register plugin installer with Composer
-     *
-     * @param Composer    $composer
-     * @param IOInterface $io
      */
-    public function activate(Composer $composer, IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io): void
     {
         $installer = new PluginInstaller($io, $composer);
         $composer->getInstallationManager()->addInstaller($installer);
     }
 
-    public function getCapabilities()
+    public function deactivate(Composer $composer, IOInterface $io): void
     {
-        return array(
-            'Composer\Plugin\Capability\CommandProvider' => 'YOURLS\ComposerInstaller\CommandProvider',
-        );
+        // No deactivation logic needed
     }
 
+    public function uninstall(Composer $composer, IOInterface $io): void
+    {
+        // No uninstall logic needed
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getCapabilities(): array
+    {
+        return [
+            'Composer\Plugin\Capability\CommandProvider' => 'YOURLS\ComposerInstaller\CommandProvider',
+        ];
+    }
 }

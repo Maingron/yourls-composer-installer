@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YOURLS\ComposerInstaller;
 
 use Composer\Package\Link;
@@ -11,25 +13,24 @@ use Composer\Repository\InstalledArrayRepository;
  */
 class PluginInstallerTest extends InstallerTestCase
 {
-
     /**
      * Const used to test case when a package requires the Composer Installer (ie a YOURLS
      * plugin with a composer.json having 'yourls/composer-installer') or not (either a
      * YOURLS plugin without this, or another regular package)
      */
-    const SUPPORTED  = 1;
+    public const SUPPORTED = 1;
 
     /**
      * Test if the composer plugin creates a vendor dir, or add to it, when it has to. Can
      * be is the package does not support the Plugin installer, or if the package adds more
      * dependencies (ie plugin in /user/plugins/ and more libs in /includes/vendor)
      */
-    const VENDOR_DIR = 2;
+    public const VENDOR_DIR = 2;
 
     /**
      * Always register the plugin installer
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->installer = new PluginInstaller($this->io, $this->composer);
@@ -38,7 +39,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test if type 'yourls-plugin' is supported
      */
-    public function testSupports()
+    public function testSupports(): void
     {
         $this->assertTrue($this->installer->supports('yourls-plugin'));
         $this->assertFalse($this->installer->supports('amazing-plugin'));
@@ -47,7 +48,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test if install path is correct with a package that doesn't support the plugin installer
      */
-    public function testGetInstallPathNoSupport()
+    public function testGetInstallPathNoSupport(): void
     {
         $package = $this->pluginPackageFactory();
         $this->assertEquals($this->testDir . '/vendor/joecool/super-plugin', $this->installer->getInstallPath($package));
@@ -56,7 +57,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test if install path is correct with a package that supports the plugin installer
      */
-    public function testGetInstallPathDefault()
+    public function testGetInstallPathDefault(): void
     {
         $package = $this->pluginPackageFactory(self::SUPPORTED);
         $this->assertEquals('user/plugins/super-plugin', $this->installer->getInstallPath($package));
@@ -65,7 +66,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test if install path is correct with a package that does not have a 'vendor/package' name
      */
-    public function testGetInstallPathNoVendor()
+    public function testGetInstallPathNoVendor(): void
     {
         $package = $this->pluginPackageFactory(self::SUPPORTED, 'zomg');
         $this->assertEquals('zomg', $package->getPrettyName());
@@ -75,7 +76,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test installation of package that does not support the plugin installer
      */
-    public function testInstallNoSupport()
+    public function testInstallNoSupport(): void
     {
         $package = $this->pluginPackageFactory(self::VENDOR_DIR);
         $this->assertEquals($this->testDir . '/vendor/joecool/super-plugin', $this->installer->getInstallPath($package));
@@ -86,7 +87,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test installation of package that does support the plugin installer
      */
-    public function testInstallWithoutVendorDir()
+    public function testInstallWithoutVendorDir(): void
     {
         $package = $this->pluginPackageFactory(self::SUPPORTED);
         $this->assertEquals('user/plugins/super-plugin', $this->installer->getInstallPath($package));
@@ -97,7 +98,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test update of package that does not support the plugin installer
      */
-    public function testUpdateNoSupport()
+    public function testUpdateNoSupport(): void
     {
         $repo = new InstalledArrayRepository();
 
@@ -109,8 +110,8 @@ class PluginInstallerTest extends InstallerTestCase
         $this->assertFileExists($this->testDir . '/vendor/joecool/super-plugin/vendor-created.txt');
 
         $this->filesystem->emptyDirectory($this->testDir . '/vendor/joecool/super-plugin');
-        $this->assertFileNotExists($this->testDir . '/vendor/joecool/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/vendor/joecool/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/vendor/joecool/super-plugin/plugin.php');
+        $this->assertFileDoesNotExist($this->testDir . '/vendor/joecool/super-plugin/vendor-created.txt');
 
         $target = $this->pluginPackageFactory(self::VENDOR_DIR);
         $this->assertEquals($this->testDir . '/vendor/joecool/super-plugin', $this->installer->getInstallPath($target));
@@ -122,7 +123,7 @@ class PluginInstallerTest extends InstallerTestCase
     /**
      * Test update of package that does not support the plugin installer
      */
-    public function testUpdateWithoutVendorDir()
+    public function testUpdateWithoutVendorDir(): void
     {
         $repo = new InstalledArrayRepository();
 
@@ -131,20 +132,20 @@ class PluginInstallerTest extends InstallerTestCase
         $this->installer->install($repo, $initial);
         $repo->addPackage($initial);
         $this->assertFileExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $this->filesystem->emptyDirectory($this->testDir . '/user/plugins/super-plugin');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/plugin.php');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $target = $this->pluginPackageFactory(self::SUPPORTED);
         $this->assertEquals('user/plugins/super-plugin', $this->installer->getInstallPath($target));
         $this->installer->update($repo, $initial, $target);
         $this->assertFileExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
     }
 
-    public function testUpdateVendorDir()
+    public function testUpdateVendorDir(): void
     {
         $repo = new InstalledArrayRepository();
 
@@ -156,8 +157,8 @@ class PluginInstallerTest extends InstallerTestCase
         $this->assertFileExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $this->filesystem->emptyDirectory($this->testDir . '/user/plugins/super-plugin');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/plugin.php');
-        $this->assertFileNotExists($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/plugin.php');
+        $this->assertFileDoesNotExist($this->testDir . '/user/plugins/super-plugin/vendor-created.txt');
 
         $target = $this->pluginPackageFactory(self::SUPPORTED | self::VENDOR_DIR);
         $this->assertEquals('user/plugins/super-plugin', $this->installer->getInstallPath($target));
@@ -168,12 +169,8 @@ class PluginInstallerTest extends InstallerTestCase
 
     /**
      * Creates a dummy plugin package
-     *
-     * @param  int     $flags Combination of self::SUPPORTED and self::VENDOR_DIR
-     * @param  string  $name  Custom package name of the plugin package, eg joecool/super-plugin
-     * @return Package
      */
-    protected function pluginPackageFactory(int $flags = 0, string $name='joecool/super-plugin'): Package
+    protected function pluginPackageFactory(int $flags = 0, string $name = 'joecool/super-plugin'): Package
     {
         $package = new Package($name, '1.0.0.0', '1.0.0');
         $package->setType('yourls-plugin');
@@ -182,8 +179,9 @@ class PluginInstallerTest extends InstallerTestCase
 
         // This package is a YOURLS plugin that supports the YOURLS Installer
         if ($flags & self::SUPPORTED) {
+            $link = new Link($name, 'yourls/composer-installer', new \Composer\Semver\Constraint\MatchAllConstraint());
             $package->setRequires([
-                new Link($name, 'yourls/composer-installer')
+                'yourls/composer-installer' => $link
             ]);
         }
 

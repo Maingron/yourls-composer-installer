@@ -9,11 +9,12 @@
         "yourls-plugin"
     ],
     "require": {
+        "php": "^8.4",
         "composer-plugin-api": "^2.6",
         "wikimedia/composer-merge-plugin": "^2.0"
     },
     "require-dev": {
-        "composer/composer": "^2.0.13",
+        "composer/composer": "^2.8",
         "phpunit/phpunit": "^12.0"
     },
     "autoload": {
@@ -28,5 +29,10 @@
     },
     "extra": {
         "class": "YOURLS\\ComposerInstaller\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "wikimedia/composer-merge-plugin": true
+        }
     }
 }
